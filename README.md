@@ -4,19 +4,13 @@ Plugin for [Kodi](https://kodi.tv/) to launch [Steamlink](https://steamcommunity
 
 ## Requirements
 
-* Raspbian >=9 already installed.
+* Raspbian >=10 already installed.
 
 * Install `kodi` package:
 
   ```shell
   sudo apt-get update
   sudo apt-get install -y kodi
-  ```
-
-* A `kodi` user is created and used to start `kodi-standalone` service:
-
-  ```shell
-  sudo useradd -a -m -U -G "audio,bluetooth,input,plugdev,video" -s /bin/bash -u 999 kodi
   ```
 
 * Systemd service unit is being installed to start `kodi-standalone` service:
@@ -28,8 +22,8 @@ Plugin for [Kodi](https://kodi.tv/) to launch [Steamlink](https://steamcommunity
   After = systemd-user-sessions.service network.target sound.target
 
   [Service]
-  User = kodi
-  Group = kodi
+  User = pi
+  Group = pi
   Type = simple
   ExecStart = /usr/bin/kodi-standalone
   Restart = always
@@ -50,6 +44,12 @@ Plugin for [Kodi](https://kodi.tv/) to launch [Steamlink](https://steamcommunity
   sudo apt-get update
   sudo apt-get install -y steamlink
   ```
+  
+* Install a minimal X11 server to start steamlink
+
+  ```shell
+  sudo apt-get --no-install-recommends install -y xserver-xorg xserver-xorg-video-fbturbo xinit
+  ```
 
 ## Plugin installation
 
@@ -57,11 +57,11 @@ Plugin for [Kodi](https://kodi.tv/) to launch [Steamlink](https://steamcommunity
 
 * Download the [zip](https://github.com/bigbrozer/kodi-steamlink-launcher/releases) of the launcher and install it via Kodi (*Extension → Install from Zip file*). You must **allow untrusted sources** in system settings prior to this.
 
-* Setup sudo rules to allow `kodi` user to run steamlink:
+* Setup sudo rules to allow `pi` user to run steamlink:
 
   ```bash
   cat <<EOF | sudo tee /etc/sudoers.d/steamlink-kodi
-  kodi ALL=(root) NOPASSWD: /bin/systemctl stop kodi, /bin/systemctl restart kodi, /bin/openvt
+  pi ALL=(root) NOPASSWD: /bin/systemctl stop kodi, /bin/systemctl restart kodi
   EOF
   ```
 
